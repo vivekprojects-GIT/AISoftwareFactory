@@ -1,0 +1,2 @@
+INSERT INTO answer (question_id, sql_query, result_count) VALUES (1, 'SELECT AVG(salary) FROM employees', 10);
+SELECT * FROM answer WHERE question_id = 1 AND sql_query = 'SELECT AVG(salary) FROM employees';

@@ -1,0 +1,2 @@
+-- This migration is intentionally left empty to reject write queries.
+-- Any attempt to execute a write query will be refused by the application logic.

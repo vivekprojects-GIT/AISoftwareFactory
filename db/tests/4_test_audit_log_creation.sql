@@ -1,0 +1,2 @@
+INSERT INTO audit_log (conversation_id, user_id, query, result_count) VALUES (1, 'user1', 'SELECT AVG(salary) FROM employees', 10);
+SELECT * FROM audit_log WHERE conversation_id = 1 AND user_id = 'user1' AND query = 'SELECT AVG(salary) FROM employees';
