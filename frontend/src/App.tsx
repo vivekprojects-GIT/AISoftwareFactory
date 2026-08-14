@@ -11,7 +11,6 @@ const App: React.FC = () => {
         <Route path='/' element={<QueryGenerator />} />
       </Routes>
     </Router>
-  );
-};
+  );};
 
 export default App;
