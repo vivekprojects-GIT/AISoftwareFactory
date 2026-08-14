@@ -1,54 +1,40 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
-from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
-from ai_software_factory.domain.sql_query import validate_sql_query
-from ai_software_factory.repositories.conversation_repository import ConversationRepository
-from ai_software_factory.ai_factory import ask_model, run_read_only
+import httpx
+from ai_software_factory.settings import Settings
+from ai_software_factory.ai_factory import ask_model
+from ai_software_factory.domain.sql_query import validate_sql_query, is_read_only
+from ai_software_factory.repositories.conversation_repository import add_question_to_conversation, get_conversation_history
+from ai_software_factory.utils.logging_utils import log_query_execution
 
 logger = logging.getLogger(__name__)
 
-class SQLService:
-    def __init__(self, db: Session = Depends(run_read_only)):
-        self.db = db
-        self.conversation_repo = ConversationRepository(db)
+async def ask_question(question: str) -> dict:
+    try:
+        # Validate the question
+        validate_sql_query(question)
 
-    async def execute_query(self, query: str) -> dict:
-        if not validate_sql_query(query):
-            raise HTTPException(status_code=400, detail="Invalid SQL query")
-        try:
-            result = await ask_model(system="", user=query)
-            return {
-                "query": query,
-                "result": result,
-                "sql": query
-            }
-        except Exception as e:
-            logger.error(f"Error executing query: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        # Check if the query is read-only
+        if not is_read_only(question):
+            raise ValueError('Generated SQL is read-only; anything that writes or deletes is refused')
 
-    async def add_question_to_conversation(self, question: str) -> dict:
-        try:
-            result = await ask_model(system="", user=question)
-            conversation_id = self.conversation_repo.add_question(question, result)
-            return {
-                "conversation_id": conversation_id,
-                "question": question,
-                "result": result
-            }
-        except Exception as e:
-            logger.error(f"Error adding question to conversation: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        # Generate SQL using AI model
+        sql = await ask_model(system='You are an expert in understanding and deconstructing natural language into SQL components.', user=question)
 
-    async def get_conversation_history(self, conversation_id: int) -> dict:
-        try:
-            history = self.conversation_repo.get_conversation_history(conversation_id)
-            return {
-                "conversation_id": conversation_id,
-                "history": history
-            }
-        except Exception as e:
-            logger.error(f"Error getting conversation history: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+        # Log the query execution
+        log_query_execution(sql, question)
+
+        # Add the question to conversation history
+        add_question_to_conversation(question, sql)
+
+        return {
+            'sql': sql,
+            'query': question,
+            'status': 'success'
+        }
+    except Exception as e:
+        logger.error(f'Error processing question: {e}', exc_info=True)
+        return {
+            'error': str(e),
+            'status': 'failure'
+        }
