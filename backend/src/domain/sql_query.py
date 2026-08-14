@@ -1,21 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import logging
+from typing import Optional
 
-logger = logging.getLogger(__name__)
+class SQLQuery:
+    def __init__(self, query: str):
+        self.query = query
 
-def validate_sql_query(user_question: str) -> bool:
-    try:
-        # Validate the SQL query
-        pass
-    except Exception as e:
-        logger.error(f'Error validating SQL query: {e}', extra={'user_question': user_question})
-        raise
-
-def is_read_only(sql_query: str) -> bool:
-    try:
-        # Check if the query is read-only
-        pass
-    except Exception as e:
-        logger.error(f'Error checking if query is read-only: {e}', extra={'sql_query': sql_query})
-        raise
+    def is_read_only(self) -> bool:
+        # Implement logic to check if the SQL query is read-only
+        return True  # Placeholder implementation
