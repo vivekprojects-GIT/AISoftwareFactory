@@ -1,24 +1,26 @@
 # Scrum Master / Delivery Manager
 
-_build · task T14 · run RUN-2E951154 · model `ollama/qwen2.5-coder:7b`_
+_build · task T14 · run RUN-C0FC22B7 · model `ollama/qwen2.5-coder:7b`_
 
 ## What this role decided
 
-The team is working on implementing the requested feature to allow analysts to ask questions in plain English and receive answers along with the generated SQL. The implementation involves creating new components, setting up local deployment using docker-compose, and ensuring that the system adheres to security and safety checks.
+The team is working on setting up the project structure using docker-compose and integrating ChromaDB for vector storage or similarity search. The current focus is on implementing the conversion of natural language questions into SQL queries, ensuring that any generated query that would write or delete data is refused, not executed, and logging every question, generated query, and result count to the audit log.
 
 ## Decisions
 
-- Continue iterating on the implementation based on feedback and progress.
+- Install the missing module as per the decision made by saivivek on approval APR-A1DC1C9A
+- Use ChromaDB for vector storage or similarity search, and SQL for all structured data
 
 ## Findings
 
-- The team has already created several new components as per the approved specifications.
-- Local deployment is being set up using docker-compose as per the decision made by vivek on approval APR-CAF3FAF1.
+- The build_static gate has rejected this before: 'typing.Optional' imported but unused (seen 36×)
+- The build_static gate has rejected this before: add_question_to_conversation() has an empty body (seen 31×)
+- The build_static gate has rejected this before: create_conversation() has an empty body (seen 31×)
 
 ## Open questions
 
-- How to handle cases where a generated query would write or delete data, ensuring it is refused as per AC-2.
-- What steps should be taken to save conversations and allow them to be reopened later with their questions and answers, addressing AC-3.
+- What is the expected format of the input to the 'ask_model' function?
+- How should the conversation history be stored and retrieved?
 
 ---
 
