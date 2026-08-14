@@ -19,4 +19,4 @@ class ConversationRepository:
 
     def get_conversation_history(self) -> List[Dict]:
         # Implement the logic to retrieve the conversation history
-        pass
+        return []
