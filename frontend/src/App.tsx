@@ -1,18 +1,16 @@
 // Import necessary libraries and components
 import React from 'react';
-import QueryForm from './components/QueryForm';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import QueryGenerator from './components/QueryGenerator';
 
-// Define the main App component
+// Define the main application component
 const App: React.FC = () => {
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <h1>AI Software Factory</h1>
-      </header>
-      <main>
-        <QueryForm />
-      </main>
-    </div>
+    <Router>
+      <Routes>
+        <Route path='/' element={<QueryGenerator />} />
+      </Routes>
+    </Router>
   );
 };
 
