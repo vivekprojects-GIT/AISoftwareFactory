@@ -1,0 +1,7 @@
+CREATE TABLE sql_query (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    query TEXT NOT NULL,
+    is_read_only BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+-- Rollback: DROP TABLE IF EXISTS sql_query;
