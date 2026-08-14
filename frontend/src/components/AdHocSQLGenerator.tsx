@@ -54,10 +54,7 @@ const AdHocSQLGenerator = () => {
         <Button onClick={handleSubmit} isDisabled={!question}>Generate SQL</Button>
         {answers.map((ans) => (
           <Box key={ans.id} p={2} border='1px solid #ccc' borderRadius='md'>
-            <HStack justifyContent='space-between'>
-              <Text fontWeight='bold'>{ans.question}</Text>
-              <Text>{new Date().toLocaleString()}</Text>
-            </HStack>
+            <Text>Question: {ans.question}</Text>
             <Text>Answer: {ans.answer}</Text>
             <CodeBlock language='sql'>{ans.sql}</CodeBlock>
           </Box>
