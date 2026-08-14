@@ -1,25 +1,22 @@
 # Quality Orchestrator
 
-_assure · task T15 · run RUN-06A8DDA7 · model `ollama/qwen2.5-coder:7b`_
+_assure · task T15 · run RUN-2E951154 · model `ollama/qwen2.5-coder:7b`_
 
 ## What this role decided
 
-The change requires proving that the new component for handling natural language to SQL generation meets the acceptance criteria, particularly AC-1 and AC-2.
+The change requires proving that the new component for handling natural language to SQL generation meets the acceptance criteria, specifically AC-1, AC-2, and AC-3. The quality agents running will be integration tests, security checks, and unit tests.
 
 ## Decisions
 
-- Run integration tests to verify AC-1 by simulating a user asking a question in plain English and checking if the system returns an answer and the corresponding SQL query.
-- Run security tests to verify AC-2 by attempting to execute a generated query that would write or delete data and ensuring it is refused.
+- Run integration tests to validate AC-1.
+- Conduct security checks to ensure AC-2 is met.
+- Execute unit tests for AC-3 verification.
 
 ## Findings
 
-- AC-1: The system must return an answer and the SQL query that produced it when a question in plain English is asked. This has not been proven yet.
-- AC-2: The system must refuse and not execute any generated query that would write or delete data. This has not been proven yet.
-
-## Open questions
-
-- What specific test cases should be included for AC-1?
-- How can we ensure that the system correctly identifies and refuses queries that would write or delete data?
+- AC-1: Integration tests are required to ensure that a question in plain English returns an answer and the SQL that produced it.
+- AC-2: Security checks are needed to verify that generated queries that would write or delete data are refused, not executed.
+- AC-3: Unit tests should be conducted to confirm that conversations are saved and can be reopened later with their questions and answers.
 
 ---
 
