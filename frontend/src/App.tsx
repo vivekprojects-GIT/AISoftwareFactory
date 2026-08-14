@@ -8,7 +8,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<QueryGenerator />} />
+        <Route path='/' element={<QueryGenerator />} /> // Route for the query generator component
       </Routes>
     </Router>
   );
