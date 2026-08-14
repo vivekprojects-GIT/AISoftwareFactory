@@ -1,14 +1,14 @@
 # Solution Architect
 
-_design · task T7 · run RUN-2E951154 · model `ollama/qwen2.5-coder:7b`_
+_design · task T7 · run RUN-C0FC22B7 · model `ollama/qwen2.5-coder:7b`_
 
 ## What this role decided
 
-The solution involves creating a new component for natural language to SQL conversion, which will be integrated into the existing local model runtime. The component will use ChromaDB for vector storage and the local model server for language understanding.
+The solution involves creating a new component for handling natural language to SQL conversion, which will be integrated into the existing local model runtime. The component will use ChromaDB for vector storage and the local model server for language understanding.
 
 ## Decisions
 
-- **Use ChromaDB for vector storage or similarity search.** — ChromaDB is already bound to the project, and it meets the requirement of storing vector data efficiently. Using a second vector store would introduce unnecessary complexity.
+- **Use ChromaDB for vector storage or similarity search.** — ChromaDB is already bound and meets the requirement of handling vector data efficiently. Using it avoids introducing a second vector store or document database.
 
 ## Components
 
