@@ -4,4 +4,4 @@
 - criterion: AC-3
 - statement: A conversation is saved and can be reopened later with its questions and answers
 - gate: unit
-- executed by: backend agent inside ai-software-factory
+- executed by: frontend agent inside ai-software-factory
