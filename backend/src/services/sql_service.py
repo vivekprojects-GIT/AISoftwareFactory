@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 from ai_software_factory.ai_factory import run_read_only
 from ai_software_factory.domain.sql_query import is_read_only
 from ai_software_factory.repositories.conversation_repository import add_question_to_conversation
-from ai_software_factory.utils.logging import logger
 
 logger = logging.getLogger(__name__)
 
