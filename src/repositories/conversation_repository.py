@@ -2,6 +2,8 @@
 
 import logging
 from sqlalchemy.orm import Session
+from models.conversation import Conversation
+from models.generated_sql import GeneratedSQL
 
 logger = logging.getLogger(__name__)
 
