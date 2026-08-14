@@ -4,6 +4,7 @@ from ai_software_factory.services.sql_generator_service import SQLGeneratorServi
 from ai_software_factory.repositories.conversation_repository import ConversationRepository
 from ai_software_factory.domain.question import Question
 from ai_software_factory.domain.query import Query
+from ai_software_factory.services.audit_logger import AuditLoggerService
 
 @pytest.fixture
 def sql_generator_service():

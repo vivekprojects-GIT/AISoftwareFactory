@@ -1,6 +1,5 @@
 # question_manager.py
 from typing import List, Dict
-from pydantic import BaseModel
 from ai_software_factory.repositories.conversation_repository import ConversationRepository
 from ai_software_factory.domain.question import Question
 from ai_software_factory.services.audit_logger import AuditLogger

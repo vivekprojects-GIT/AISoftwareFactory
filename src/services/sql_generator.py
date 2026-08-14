@@ -1,7 +1,5 @@
 # sql_generator.py
 from typing import List, Dict
-from pydantic import BaseModel
-from sqlalchemy import text
 from ai_software_factory.repositories.conversation_repository import ConversationRepository
 from ai_software_factory.domain.question import Question
 from ai_software_factory.domain.query import Query
