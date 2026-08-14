@@ -1,14 +1,14 @@
 # Solution Architect
 
-_design · task T7 · run RUN-C01EECA4 · model `ollama/qwen2.5-coder:7b`_
+_design · task T7 · run RUN-22702D4E · model `ollama/qwen2.5-coder:7b`_
 
 ## What this role decided
 
-The solution involves creating a new component for handling natural language to SQL conversion, leveraging existing services and tools. The component will be deployed locally using Docker Compose.
+The solution involves creating a new component that will handle the conversion of natural language questions into SQL queries, while ensuring that generated queries are read-only and logged appropriately.
 
 ## Decisions
 
-- **Create a new component for natural language to SQL conversion** — This component will handle the conversion of user queries into SQL, ensuring that only read-only operations are performed and that all queries are logged.
+- **Create a new component named 'sql_query_generator' in the 'ai-software-factory' repository to handle the conversion of natural language questions into SQL queries.** — This decision ensures that the functionality is encapsulated within a single, well-defined component, making it easier to manage and maintain. It also allows for easy testing and integration with other parts of the system.
 
 ## Components
 
@@ -16,7 +16,7 @@ The solution involves creating a new component for handling natural language to 
 
 ## Risks
 
-- The component may not handle all edge cases of natural language queries, leading to incorrect SQL generation.
+- The new component may not handle all edge cases of natural language questions, leading to incorrect or incomplete SQL queries.
 
 ---
 
