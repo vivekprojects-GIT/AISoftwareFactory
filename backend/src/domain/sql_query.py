@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import typing
-from ai_software_factory.settings import Settings
 import logging
 
 logger = logging.getLogger(__name__)

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import httpx
+
 from ai_software_factory.domain.models import QueryResult
 import logging
 
