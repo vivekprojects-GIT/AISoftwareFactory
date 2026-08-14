@@ -1,6 +1,6 @@
 # AISoftwareFactory
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import List
@@ -16,7 +16,7 @@ class Answer(BaseModel):
     result_count: int
 
 @app.post('/ask', response_model=Answer)
-async def ask_question(question: Question, db: Session = Depends(get_db)):
+def ask_question(question: Question, db: Session = Depends(get_db)):
     try:
         # Translate plain English question to SQL query
         sql_query = translate_to_sql(question.text)
@@ -28,7 +28,7 @@ async def ask_question(question: Question, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get('/conversation/{id}', response_model=List[Answer])
-async def get_conversation(id: int, db: Session = Depends(get_db)):
+def get_conversation(id: int, db: Session = Depends(get_db)):
     try:
         conversation = db.query(Conversation).filter(Conversation.id == id).first()
         if not conversation:
@@ -38,7 +38,7 @@ async def get_conversation(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post('/conversation', response_model=Conversation)
-async def create_conversation(conversation: ConversationCreate, db: Session = Depends(get_db)):
+def create_conversation(conversation: ConversationCreate, db: Session = Depends(get_db)):
     try:
         new_conversation = Conversation(id=conversation.id, answers=conversation.answers)
         db.add(new_conversation)
