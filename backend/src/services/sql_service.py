@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import httpx
-from ai_software_factory.settings import Settings
-from ai_software_factory.ai_factory import ask_model, run_read_only
-from ai_software_factory.domain.sql_query import validate_sql_query, is_read_only
-from ai_software_factory.repositories.conversation_repository import add_question_to_conversation, get_conversation_history
+import logging
+from time import time
+
+from sqlalchemy.orm import Session
+
+from ai_software_factory.ai_factory import run_read_only
+from ai_software_factory.domain.sql_query import is_read_only
+from ai_software_factory.repositories.conversation_repository import add_question_to_conversation
 from ai_software_factory.utils.logging import logger
 
 logger = logging.getLogger(__name__)
@@ -18,7 +21,9 @@ class SQLService:
             if is_read_only(question):
                 raise ValueError('Generated query would write or delete data and is refused.')
 
+            start_time = time()
             sql_query = await run_read_only(question)
+            elapsed_ms = int((time() - start_time) * 1000)
             result = await self.session.execute(sql_query)
             rows = result.scalars().all()
             add_question_to_conversation(self.session, question, sql_query, len(rows))
