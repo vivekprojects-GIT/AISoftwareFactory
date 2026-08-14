@@ -3,7 +3,7 @@
 from typing import List, Dict, Any
 from fastapi import HTTPException
 from ai_software_factory.repositories.conversation_repository import ConversationRepository
-from ai_software_factory.services.sql_service import validate_sql_query, generate_sql_query
+from ai_software_factory.services.sql_service import validate_sql_query
 from ai_software_factory.services.conversation_service import create_conversation, add_question_to_conversation, get_conversation_history
 from ai_software_factory.utils.logging import logger
 import httpx
