@@ -1,52 +1,39 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Dict, Any
-from fastapi import HTTPException
-from ai_software_factory.repositories.conversation_repository import ConversationRepository
-from ai_software_factory.utils.logging import logger
 import httpx
+from ai_software_factory.settings import Settings
+from ai_software_factory.ai_factory import ask_model, run_read_only
+from ai_software_factory.domain.sql_query import validate_sql_query, is_read_only
+from ai_software_factory.repositories.conversation_repository import add_question_to_conversation, get_conversation_history
+from ai_software_factory.domain.models import QueryResult
+import logging
 
-OLLAMA_URL = "http://127.0.0.1:11434"
-MODEL = "qwen2.5-coder:7b"
-
-async def ask_model(system: str, user: str) -> str:
-    response = httpx.post(
-        f"{OLLAMA_URL}/api/chat",
-        json={
-            "model": MODEL,
-            "stream": False,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        },
-        timeout=120.0,
-    )
-    response.raise_for_status()
-    return response.json()["message"]["content"]
+logger = logging.getLogger(__name__)
 
 class SQLService:
-    def __init__(self, conversation_repo: ConversationRepository):
-        self.conversation_repo = conversation_repo
+    def __init__(self, session: httpx.Client):
+        self.session = session
 
-    async def validate_sql_query(self, sql_query: str) -> None:
+    async def execute_query(self, user_question: str) -> QueryResult:
         try:
-            if "INSERT" in sql_query.upper() or "UPDATE" in sql_query.upper() or "DELETE" in sql_query.upper():
-                raise HTTPException(status_code=403, detail="Write operations are not allowed")
-        except Exception as e:
-            logger.error(f"Error validating SQL query: {e}")
-            raise HTTPException(status_code=500, detail=str(e))
+            # Validate the query
+            if not validate_sql_query(user_question):
+                raise ValueError('Invalid SQL query')
 
-    async def generate_sql_query(self, question: str) -> str:
-        try:
-            return await ask_model(system="You are an expert in understanding and deconstructing natural language into SQL components.", user=question)
-        except Exception as e:
-            logger.error(f"Error generating SQL query: {e}")
-            raise HTTPException(status_code=500, detail=str(e))
+            # Check if the query is read-only
+            if not is_read_only(user_question):
+                raise PermissionError('Write queries are not allowed')
 
-    async def run_read_only(self, sql_query: str) -> List[Dict[str, Any]]:
-        try:
-            return await self.conversation_repo.run_read_only(sql_query)
+            # Execute the query using a local model server
+            sql_query = await ask_model(system='You are an expert in understanding and deconstructing natural language into SQL components.', user=user_question)
+
+            # Log the conversation history
+            add_question_to_conversation(user_question, sql_query)
+
+            # Run the read-only query using a local model server
+            result = await run_read_only(sql_query)
+
+            return QueryResult(query=sql_query, result=result)
         except Exception as e:
-            logger.error(f"Error executing SQL query: {e}")
-            raise HTTPException(status_code=500, detail=str(e))
+            logger.error(f'Error executing query: {e}', extra={'user_question': user_question})
+            raise
