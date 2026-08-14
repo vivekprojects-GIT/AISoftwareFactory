@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import httpx
-from ai_software_factory.settings import Settings
 from ai_software_factory.ai_factory import ask_model, run_read_only
 from ai_software_factory.domain.models import QueryResult
 from ai_software_factory.repositories.conversation_repository import ConversationRepository
-from ai_software_factory.services.sql_service import SQLService
 from ai_software_factory.utils.logger import logger
-from typing import List, Optional
 
 class SQLService:
     def __init__(self, conversation_repo: ConversationRepository):
@@ -33,5 +29,5 @@ class SQLService:
             raise
 
     def is_read_only(self, sql_query: str) -> bool:
-        # Implement logic to check if the generated SQL query is read-only
-        return True  # Placeholder implementation
+        # Check if the generated SQL query is read-only
+        return 'INSERT INTO' not in sql_query and 'UPDATE' not in sql_query and 'DELETE FROM' not in sql_query
