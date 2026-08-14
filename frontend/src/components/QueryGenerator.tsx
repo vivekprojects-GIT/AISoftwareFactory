@@ -1,52 +1,51 @@
-// Import necessary libraries and components
+// Import necessary hooks and components from React and other libraries
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Input, Textarea, Box, VStack, Heading, Spinner } from '@chakra-ui/react';
+import { Button, Input, Textarea, Box, VStack, HStack, Spinner } from '@chakra-ui/react';
 
 // Define the component
 const QueryGenerator: React.FC = () => {
   const [question, setQuestion] = useState('');
   const [sqlQuery, setSqlQuery] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  // Function to handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  // Function to handle the query generation
+  const generateQuery = async () => {
+    if (!question) return;
     try {
+      setLoading(true);
       const response = await axios.post('/api/generate-query', { question });
       setSqlQuery(response.data.sqlQuery);
-    } catch (err) {
-      setError('Failed to generate query. Please try again.');
+      setError(null);
+    } catch (err: any) {
+      setError(err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Render the component
+  // Render the component based on state
   return (
-    <Box p={4} maxW='md' mx='auto'>
-      <Heading mb={4}>Ask a Question</Heading>
-      <form onSubmit={handleSubmit}>
-        <Textarea
+    <Box p={4} bg='white' borderRadius='md' shadow='sm'>
+      <VStack spacing={4} align='stretch'>
+        <Input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder='Enter your question here'
-          mb={4}
+          placeholder='Ask a question in plain English'
+          isRequired
         />
-        <Button type='submit' colorScheme='blue' isLoading={loading}>Submit</Button>
-      </form>
-      {loading && <Spinner mt={4} />}
-      {error && <Text mt={4} color='red'>{error}</Text>}
-      {sqlQuery && (
-        <Box mt={4} p={2} border='1px solid #ccc' borderRadius='md'>
-          <Heading size='sm'>Generated SQL Query</Heading>
-          <pre>{sqlQuery}</pre>
-        </Box>
-      )}
+        <Button onClick={generateQuery} isLoading={loading} isDisabled={!question}>Generate SQL</Button>
+        {error && <Text color='red'>{error.message}</Text>}
+        {sqlQuery && (
+          <VStack spacing={2} align='stretch'>
+            <Text fontWeight='bold'>Generated SQL:</Text>
+            <Textarea value={sqlQuery} isReadOnly rows={10} />
+          </VStack>
+        )}
+      </VStack>
     </Box>
-  );};
+  );
+};
 
 export default QueryGenerator;
