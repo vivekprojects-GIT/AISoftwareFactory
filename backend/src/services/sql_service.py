@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import httpx
-from ai_software_factory.settings import Settings
+import logging
+
 from ai_software_factory.ai_factory import ask_model
 from ai_software_factory.domain.sql_query import validate_sql_query, is_read_only
-from ai_software_factory.repositories.conversation_repository import add_question_to_conversation, get_conversation_history
+from ai_software_factory.repositories.conversation_repository import add_question_to_conversation
 from ai_software_factory.utils.logging_utils import log_query_execution
 
 logger = logging.getLogger(__name__)
