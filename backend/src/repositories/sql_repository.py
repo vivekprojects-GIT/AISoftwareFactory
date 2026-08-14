@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from sqlalchemy import text
+
 from sqlalchemy.orm import Session
-from ai_software_factory.domain.models import QueryResult
 
 
 def execute_query(db: Session, sql: str) -> list:
