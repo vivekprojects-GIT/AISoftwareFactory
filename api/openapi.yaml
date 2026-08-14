@@ -1,83 +1,60 @@
-# openapi: 3.1.0
-info:
-  title: Analyst Question API
-  version: 1.0.0
-description: API for analysts to ask questions in plain English and receive answers along with the SQL queries generated.
+# OpenAPI 3.1 specification
+openapi: 3.1.0
+title: AI Software Factory API
+version: 1.0.0
+description: An API for generating SQL queries based on natural language questions.
 servers:
   - url: http://localhost:8000
-tags:
-  - name: Questions
 paths:
-  /ask:
+  /query:
     post:
-      summary: Ask a question in plain English
+      summary: Generate a SQL query from a natural language question
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/NaturalLanguageQuery'
       responses:
         '200':
-          description: Successful response with answer and SQL query
+          description: Successful response with generated SQL and explanation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Answer'
-        '403':
-          description: Forbidden - Generated query would write or delete data
-        '500':
-          description: Internal server error
-  /conversations/{conversationId}:
-    get:
-      summary: Get a conversation by ID
-      parameters:
-        - name: conversationId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful response with conversation details
+                $ref: '#/components/schemas/GeneratedSQLResponse'
+        '400':
+          description: Bad request - invalid input or query would write/delete data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Conversation'
-        '404':
-          description: Conversation not found
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
-tags:
-  - name: Conversations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
-    Question:
+    NaturalLanguageQuery:
       type: object
       properties:
         question:
           type: string
-          example: What is the total sales for Q1?
-    Answer:
+          example: 'How many orders were placed in the last month?'
+    GeneratedSQLResponse:
       type: object
       properties:
-        answer:
+        sql:
           type: string
-          example: The total sales for Q1 are $50,000.
-        sqlQuery:
+          format: sql
+          example: 'SELECT COUNT(*) FROM orders WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)'
+        explanation:
           type: string
-          example: SELECT SUM(sales) FROM orders WHERE quarter = 'Q1';
-    Conversation:
+          example: 'This query counts the number of orders placed in the last month by filtering on the order_date column.'
+    ErrorResponse:
       type: object
       properties:
-        id:
+        error:
           type: string
-          example: abc123
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Question'
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Answer'
+          example: 'Invalid input or query would write/delete data'
