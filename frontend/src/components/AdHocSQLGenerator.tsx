@@ -54,7 +54,8 @@ const AdHocSQLGenerator = () => {
         <Button onClick={handleSubmit} isDisabled={!question}>Generate SQL</Button>
         {answers.map((ans) => (
           <Box key={ans.id} p={2} border='1px solid #ccc' borderRadius='md'>
-            <Text>{ans.answer}</Text>
+            <Text>Question: {ans.question}</Text>
+            <Text>Answer: {ans.answer}</Text>
             <CodeBlock language='sql'>{ans.sql}</CodeBlock>
           </Box>
         ))}
