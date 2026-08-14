@@ -1,0 +1,83 @@
+# openapi: 3.1.0
+info:
+  title: Analyst Question API
+  version: 1.0.0
+description: API for analysts to ask questions in plain English and receive answers along with the SQL queries generated.
+servers:
+  - url: http://localhost:8000
+tags:
+  - name: Questions
+paths:
+  /ask:
+    post:
+      summary: Ask a question in plain English
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          description: Successful response with answer and SQL query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+        '403':
+          description: Forbidden - Generated query would write or delete data
+        '500':
+          description: Internal server error
+  /conversations/{conversationId}:
+    get:
+      summary: Get a conversation by ID
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with conversation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+        '404':
+          description: Conversation not found
+        '500':
+          description: Internal server error
+tags:
+  - name: Conversations
+components:
+  schemas:
+    Question:
+      type: object
+      properties:
+        question:
+          type: string
+          example: What is the total sales for Q1?
+    Answer:
+      type: object
+      properties:
+        answer:
+          type: string
+          example: The total sales for Q1 are $50,000.
+        sqlQuery:
+          type: string
+          example: SELECT SUM(sales) FROM orders WHERE quarter = 'Q1';
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: abc123
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
