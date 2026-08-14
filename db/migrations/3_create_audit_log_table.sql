@@ -1,5 +1,6 @@
-CREATE TABLE conversation (
+CREATE TABLE audit_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     sql_query TEXT NOT NULL,

@@ -1,3 +1,2 @@
--- This migration will be used to reject write queries
-CREATE VIEW read_only_queries AS SELECT * FROM sql_query WHERE is_read_only = TRUE;
--- Rollback: DROP VIEW IF EXISTS read_only_queries;
+-- This migration is intentionally left empty to reject write queries.
+-- Any attempt to execute a write query will be refused by the application logic.
