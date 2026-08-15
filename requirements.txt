@@ -2,3 +2,4 @@ ai_software_factory
 httpx
 SQLAlchemy
 fastapi
+chromadb
